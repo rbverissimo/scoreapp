@@ -1,5 +1,6 @@
 package br.com.serasa.scoreapp.security.controllers;
 
+import br.com.serasa.scoreapp.security.domain.User;
 import br.com.serasa.scoreapp.security.dto.LogonDto;
 import br.com.serasa.scoreapp.security.dto.RegistroDto;
 import br.com.serasa.scoreapp.security.jwt.JWTUtil;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.Collections;
@@ -20,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/auth/v1")
 public class AuthController {
 
 
@@ -49,7 +51,15 @@ public class AuthController {
 
     @PostMapping("/registrar")
     public ResponseEntity<?> registrar(@Valid @RequestBody RegistroDto registrarDto){
-        return null;
+        User user = new User();
+        user.setEmail(registrarDto.getEmail());
+        user.setPassword(registrarDto.getSenha());
+        try {
+           User response = userRepository.save(user);
+           return ResponseEntity.ok(response);
+        } catch(ResponseStatusException ex){
+            return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
+        }
     }
 
 
