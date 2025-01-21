@@ -1,5 +1,8 @@
 package br.com.serasa.scoreapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -15,6 +18,7 @@ public class Pessoa {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
+    @JsonManagedReference
     private Endereco endereco;
 
     private String telefone;
@@ -44,6 +48,7 @@ public class Pessoa {
         this.idade = idade;
     }
 
+    @JsonIgnoreProperties("hibernateLazyInitializer")
     public Endereco getEndereco() {
         return endereco;
     }

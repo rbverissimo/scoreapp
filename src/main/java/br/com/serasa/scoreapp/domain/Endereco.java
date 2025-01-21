@@ -1,5 +1,7 @@
 package br.com.serasa.scoreapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -19,8 +21,8 @@ public class Endereco {
     private String logradouro;
 
     @OneToOne(mappedBy = "endereco", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JsonBackReference
     private Pessoa pessoa;
-
 
     public Long getId() {
         return id;

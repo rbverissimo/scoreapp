@@ -11,9 +11,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PessoaRepository extends JpaRepository<Pessoa, Long> {
 
-    public Page<Pessoa> findByNome(String nome, Pageable pageable);
-    public Page<Pessoa> findByIdade(int idade, Pageable pageable);
-
-    @Query("SELECT p,e FROM Pessoa p JOIN p.endereco e WHERE p.endereco.cep=:cep")
-    public Page<Pessoa> findByCep(@Param("cep") String cep, Pageable pageable);
+    @Query("SELECT p FROM Pessoa p WHERE" +
+            " (:idade is null or p.idade=:idade) AND" +
+            " (:cep is null or p.endereco.cep=:cep) AND" +
+            " (:nome is null or LOWER(p.nome) like LOWER(concat(:nome, '%')))")
+    public Page<Pessoa> findByFilters(
+            @Param("nome") String nome,
+            @Param("idade") Integer idade,
+            @Param("cep") String cep,
+            Pageable pageable);
 }

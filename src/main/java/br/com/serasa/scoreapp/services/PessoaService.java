@@ -4,8 +4,11 @@ import br.com.serasa.scoreapp.domain.Endereco;
 import br.com.serasa.scoreapp.domain.Pessoa;
 import br.com.serasa.scoreapp.dto.EnderecoViaCepResponseDto;
 import br.com.serasa.scoreapp.dto.PessoaDto;
+import br.com.serasa.scoreapp.exceptions.EnderecoException;
 import br.com.serasa.scoreapp.repositories.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,7 +21,9 @@ public class PessoaService {
     @Autowired
     private PessoaRepository pessoaRepository;
 
-    public Pessoa save(PessoaDto pessoaDto, EnderecoViaCepResponseDto enderecoViaCepResponseDto){
+    public Pessoa save(PessoaDto pessoaDto, EnderecoViaCepResponseDto enderecoViaCepResponseDto) throws EnderecoException{
+
+        if(enderecoViaCepResponseDto == null) throw new EnderecoException("O endereço não foi fornecido");
 
         Endereco endereco = new Endereco();
         endereco.setCep(enderecoViaCepResponseDto.getCep());
@@ -28,10 +33,10 @@ public class PessoaService {
         endereco.setLogradouro(enderecoViaCepResponseDto.getLogradouro());
 
         Pessoa pessoa = new Pessoa();
-        pessoa.setNome(pessoa.getNome());
+        pessoa.setNome(pessoaDto.getNome());
         pessoa.setEndereco(endereco);
         pessoa.setIdade(pessoaDto.getIdade());
-        pessoa.setScore(pessoa.getScore());
+        pessoa.setScore(pessoaDto.getScore());
         pessoa.setTelefone(pessoaDto.getTelefone());
 
         return pessoaRepository.save(pessoa);
@@ -39,5 +44,13 @@ public class PessoaService {
 
     public Optional<Pessoa> findById(Long id){
         return pessoaRepository.findById(id);
+    }
+
+    public Page<Pessoa> findAllByFilters(String nome, Integer idade, String cep, Pageable pageable){
+        return pessoaRepository.findByFilters(nome, idade, cep, pageable);
+    }
+
+    public void delete(Pessoa pessoa){
+        pessoaRepository.delete(pessoa);
     }
 }

@@ -4,7 +4,6 @@ import br.com.serasa.scoreapp.security.domain.User;
 import br.com.serasa.scoreapp.security.dto.LogonDto;
 import br.com.serasa.scoreapp.security.dto.RegistroDto;
 import br.com.serasa.scoreapp.security.jwt.JWTUtil;
-import br.com.serasa.scoreapp.security.repositories.UserRepository;
 import br.com.serasa.scoreapp.security.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
