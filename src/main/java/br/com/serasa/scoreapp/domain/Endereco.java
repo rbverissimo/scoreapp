@@ -18,7 +18,7 @@ public class Endereco {
     private String bairro;
     private String logradouro;
 
-    @OneToOne(mappedBy = "endereco", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    @OneToOne(mappedBy = "endereco", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private Pessoa pessoa;
 
 

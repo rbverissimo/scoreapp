@@ -1,7 +1,6 @@
 package br.com.serasa.scoreapp.domain;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "pessoas")
@@ -12,12 +11,12 @@ public class Pessoa {
     private Long id;
 
     private String nome;
-    private String sobrenome;
     private int idade;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
+
     private String telefone;
     private int score;
 
@@ -35,14 +34,6 @@ public class Pessoa {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public String getSobrenome() {
-        return sobrenome;
-    }
-
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
     }
 
     public int getIdade() {
