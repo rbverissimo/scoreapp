@@ -6,6 +6,8 @@ import br.com.serasa.scoreapp.dto.EnderecoViaCepResponseDto;
 import br.com.serasa.scoreapp.dto.PessoaDto;
 import br.com.serasa.scoreapp.exceptions.EnderecoException;
 import br.com.serasa.scoreapp.repositories.PessoaRepository;
+import br.com.serasa.scoreapp.utils.MaskUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,12 +23,15 @@ public class PessoaService {
     @Autowired
     private PessoaRepository pessoaRepository;
 
+    @Autowired
+    private MaskUtils maskUtils;
+
     public Pessoa save(PessoaDto pessoaDto, EnderecoViaCepResponseDto enderecoViaCepResponseDto) throws EnderecoException{
 
-        if(enderecoViaCepResponseDto == null) throw new EnderecoException("O endereço não foi fornecido");
+        if(StringUtils.isBlank(enderecoViaCepResponseDto.getCep())) throw new EnderecoException("O endereço não é válido. Forneça um CEP válido");
 
         Endereco endereco = new Endereco();
-        endereco.setCep(enderecoViaCepResponseDto.getCep());
+        endereco.setCep(maskUtils.removerMascara(enderecoViaCepResponseDto.getCep()));
         endereco.setBairro(enderecoViaCepResponseDto.getBairro());
         endereco.setCidade(enderecoViaCepResponseDto.getLocalidade());
         endereco.setEstado(enderecoViaCepResponseDto.getEstado());

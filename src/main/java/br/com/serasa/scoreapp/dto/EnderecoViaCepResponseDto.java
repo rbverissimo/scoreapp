@@ -1,5 +1,8 @@
 package br.com.serasa.scoreapp.dto;
 
+import springfox.documentation.annotations.ApiIgnore;
+
+@ApiIgnore
 public class EnderecoViaCepResponseDto {
 
     private String cep;

@@ -1,10 +1,14 @@
 package br.com.serasa.scoreapp.security.controllers;
 
+import br.com.serasa.scoreapp.dto.MensagensResponseDto;
 import br.com.serasa.scoreapp.security.domain.User;
 import br.com.serasa.scoreapp.security.dto.LogonDto;
 import br.com.serasa.scoreapp.security.dto.RegistroDto;
 import br.com.serasa.scoreapp.security.jwt.JWTUtil;
 import br.com.serasa.scoreapp.security.services.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -41,6 +42,12 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/v1/logon")
+    @ApiOperation(value = "Fazer o logon no sistema", notes = "Retorna um JWT ao autenticar o usuário",
+            consumes = "application/json", produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Acesso garantido. Token gerado"),
+            @ApiResponse(code = 401, message = "Credenciais inválidas")
+    })
     public ResponseEntity<?> logon(@Valid @RequestBody LogonDto loginDto){
         try {
 
@@ -48,13 +55,19 @@ public class AuthController {
             authManager.authenticate(authenticationToken);
             String token = jwtUtil.generateToken(loginDto.getEmail());
             Map<String, String> response = Collections.singletonMap("jwt-token", token);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (BadCredentialsException ex){
-            return ResponseEntity.status(401).body("Credenciais inválidas");
+            return ResponseEntity.status(401).body(new MensagensResponseDto(Arrays.asList("Credenciais inválidas")));
         }
     }
 
     @PostMapping("/v1/registrar")
+    @ApiOperation(value = "Cadastrar usuário", produces = "application/json", consumes = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Usuário cadastrado"),
+            @ApiResponse(code = 400, message = "Requisição rejeitada"),
+            @ApiResponse(code = 500, message = "Erro interno do servidor")
+    })
     public ResponseEntity<?> registrar(@Valid @RequestBody RegistroDto registrarDto){
         User user = new User();
         user.setName(registrarDto.getNomeUsuario());
@@ -65,7 +78,7 @@ public class AuthController {
 
         try {
            User response = userService.save(user);
-           return ResponseEntity.ok(response);
+           return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch(ResponseStatusException ex){
             return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
         }

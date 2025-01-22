@@ -1,9 +1,12 @@
 package br.com.serasa.scoreapp.security.dto;
 
+import io.swagger.annotations.ApiModel;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+@ApiModel(value = "Dados para o registro de um usuário no sistema", description = "Todos campos são necessários")
 public class RegistroDto {
 
     @NotBlank(message = "O nome de usuário é obrigatório")

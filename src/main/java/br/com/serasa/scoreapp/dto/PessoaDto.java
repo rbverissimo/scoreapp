@@ -1,24 +1,34 @@
 package br.com.serasa.scoreapp.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.*;
+import java.io.Serializable;
 
-public class PessoaDto {
+@ApiModel(value = "Campos necessários para o cadastro de pessoa")
+public class PessoaDto implements Serializable {
 
+    @ApiModelProperty(notes = "Nome da pessoa")
     @NotBlank(message = "O nome é obrigatório")
     @Size(min=3, max=64, message = "O nome deve possuir entre 3 e 64 caracteres")
     private String nome;
 
+    @ApiModelProperty(notes = "Um CEP apenas números", example = "74230050")
     @NotBlank(message = "O cep é obrigatório")
     private String cep;
 
+    @ApiModelProperty(notes = "A idade da pessoa")
     @Positive(message = "A idade deve ser um número positivo")
     private int idade;
 
+    @ApiModelProperty(notes = "Um score entre 0 e 1000")
     @NotNull(message = "Informe o score da pessoa")
     @Min(value = 0, message = "O score mínimo é 0")
     @Max(value = 1000, message = "O score máximo é 1000")
     private int score;
 
+    @ApiModelProperty(notes = "O telefone com DDD apenas números", example = "62980801212")
     @NotBlank(message = "O número de telefone é obrigatório")
     private String telefone;
 

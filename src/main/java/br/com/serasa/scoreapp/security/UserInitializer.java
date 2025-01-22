@@ -24,14 +24,26 @@ public class UserInitializer {
     @Transactional
     private void init(){
         Role adminRole = userService.getRoleByNome("ADMIN")
-                .orElseThrow(() -> new RuntimeException("Role do usuário não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Role do usuário não encontrado: ADMIN"));
         if(userService.getUserByEmail("admin@serasa.com.br").isPresent()) return;
 
+        User admin = new User();
+        admin.setEmail("admin@serasa.com.br");
+        admin.setPassword(passwordEncoder.encode("admin@s12"));
+        admin.setRoles(new HashSet<>(){{ add(adminRole); }});
+        userService.save(admin);
+
+        Role userRole = userService.getRoleByNome("USER")
+                .orElseThrow(() -> new RuntimeException("Role do usuário não encontrado: USER"));
+
+        if(userService.getUserByEmail("user@serasa.com.br").isPresent()) return;
+
         User user = new User();
-        user.setEmail("admin@serasa.com.br");
-        user.setPassword(passwordEncoder.encode("admin@s12"));
-        user.setRoles(new HashSet<>(){{ add(adminRole); }});
+        user.setEmail("user@serasa.com.br");
+        user.setPassword(passwordEncoder.encode("user@s12"));
+        user.setRoles(new HashSet<>(){{ add(userRole); }});
         userService.save(user);
+
     }
 
 }
