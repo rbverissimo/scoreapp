@@ -19,12 +19,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/pessoas")
@@ -92,7 +90,9 @@ public class PessoaController {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MensagensResponseDto(Arrays.asList(ex.getMessage())));
                     }
                 })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pessoa não encontrada"));
+                .orElseGet(() -> {
+                    return ResponseEntity.status(404).body(new MensagensResponseDto(Arrays.asList("Pessoa não encontrada")));
+                });
     }
 
     @GetMapping("/v1/pessoas")
@@ -144,7 +144,9 @@ public class PessoaController {
                     }
                     return ResponseEntity.status(HttpStatus.CREATED).body(pessoaAtualizada);
                 })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pessoa não encontrada"));
+                .orElseGet(() -> {
+                    return ResponseEntity.status(404).body(new MensagensResponseDto(Arrays.asList("Pessoa não encontrada")));
+                });
     }
 
     @DeleteMapping("/v1/{id}")
@@ -163,7 +165,9 @@ public class PessoaController {
             } catch(Exception ex){
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MensagensResponseDto(Arrays.asList(ex.getMessage())));
             }
-        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pessoa não encontrada"));
+        }).orElseGet(() -> {
+            return ResponseEntity.status(404).body(new MensagensResponseDto(Arrays.asList("Pessoa não encontrada")));
+        });
     }
 
 }
