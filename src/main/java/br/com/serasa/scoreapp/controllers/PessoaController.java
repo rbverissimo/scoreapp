@@ -18,11 +18,16 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/pessoas")
@@ -169,5 +174,9 @@ public class PessoaController {
             return ResponseEntity.status(404).body(new MensagensResponseDto(Arrays.asList("Pessoa não encontrada")));
         });
     }
+
+
+
+
 
 }

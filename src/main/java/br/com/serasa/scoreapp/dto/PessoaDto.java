@@ -1,5 +1,7 @@
 package br.com.serasa.scoreapp.dto;
 
+import br.com.serasa.scoreapp.validators.annotated.CEP;
+import br.com.serasa.scoreapp.validators.annotated.Telefone;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -16,10 +18,12 @@ public class PessoaDto implements Serializable {
 
     @ApiModelProperty(notes = "Um CEP apenas números", example = "74230050")
     @NotBlank(message = "O cep é obrigatório")
+    @CEP
     private String cep;
 
     @ApiModelProperty(notes = "A idade da pessoa")
     @Positive(message = "A idade deve ser um número positivo")
+    @Max(value = 120, message = "A idade não pode ser superior a 120 anos")
     private int idade;
 
     @ApiModelProperty(notes = "Um score entre 0 e 1000")
@@ -30,6 +34,7 @@ public class PessoaDto implements Serializable {
 
     @ApiModelProperty(notes = "O telefone com DDD apenas números", example = "62980801212")
     @NotBlank(message = "O número de telefone é obrigatório")
+    @Telefone
     private String telefone;
 
     public String getNome() {
