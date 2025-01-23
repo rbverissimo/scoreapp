@@ -37,7 +37,7 @@ public class ViaCepWebService {
             Gson gson = new Gson();
             dto = gson.fromJson(response.body(), EnderecoViaCepResponseDto.class);
         }
-        if(response.statusCode() > 500 || response.statusCode() > 400) throw new ViaCepException(response.body());
+        if(response.statusCode() >= 500 || response.statusCode() >= 400) throw new ViaCepException(response.body());
         return Optional.ofNullable(dto);
 
     }
